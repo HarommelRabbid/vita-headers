@@ -32,7 +32,8 @@ typedef enum SceVideodecErrorCode {
 } SceVideodecErrorCode;
 
 typedef enum SceVideodecType {
-	SCE_VIDEODEC_TYPE_HW_AVCDEC = 0x1001
+	SCE_VIDEODEC_TYPE_HW_AVCDEC = 0x1001,
+	SCE_VIDEODEC_TYPE_HW_M4VDEC = 0x1002
 } SceVideodecType;
 
 typedef enum SceAvcdecErrorCode {
@@ -190,6 +191,15 @@ VITASDK_BUILD_ASSERT_EQ(0xC, SceAvcdecArrayPicture);
 int sceVideodecInitLibrary(SceVideodecType codec, const SceVideodecQueryInitInfoHwAvcdec *initInfo);
 
 /**
+ * @info Same as `sceVideodecInitLibrary`, but this is needed to initialize the M4V decoder, as the latter will fail with `SCE_VIDEODEC_ERROR_INVALID_PARAM`
+ * @param[in] codec - See ::SceVideodecType
+ * @param[in] initInfo - See ::SceVideodecQueryInitInfoHwAvcdec
+ *
+ * @return 0 on success, < 0 on error.
+ */
+int sceVideodecInitLibraryInternal(SceVideodecType codec, const SceVideodecQueryInitInfoHwAvcdec *initInfo);
+
+/**
  * @param[in] codec - See ::SceVideodecType
  *
  * @return 0 on success, < 0 on error.
@@ -229,6 +239,26 @@ int sceAvcdecDeleteDecoder(SceAvcdecCtrl *decoder);
  * @return 0 on success, < 0 on error.
  */
 int sceAvcdecDecode(const SceAvcdecCtrl *decoder, const SceAvcdecAu *au, SceAvcdecArrayPicture *array_picture);
+
+/**
+ * @param[in] decoder
+ * @param[out] array_picture - Must set numOfElm and pPicture. See ::SceAvcdecArrayPicture
+ *
+ * @return 0 on success, < 0 on error.
+ */
+int sceAvcdecDecodeStop(const SceAvcdecCtrl *decoder, SceAvcdecArrayPicture *array_picture);
+
+/**
+ * @param[in] type, must be `SCE_VIDEODEC_TYPE_HW_M4VDEC`
+ */
+int sceM4vdecQueryDecoderMemSize(SceVideodecType type, const SceAvcdecQueryDecoderInfo *q, SceAvcdecDecoderInfo *info);
+/**
+ * @param[in] type, must be `SCE_VIDEODEC_TYPE_HW_M4VDEC`
+ */
+int sceM4vdecCreateDecoder(SceVideodecType type, SceAvcdecCtrl *ctrl, const SceAvcdecQueryDecoderInfo *q);
+int sceM4vdecDeleteDecoder(SceAvcdecCtrl *ctrl);
+int sceM4vdecDecode(const SceAvcdecCtrl *ctrl, const SceAvcdecAu *au, SceAvcdecArrayPicture *pics);
+int sceM4vdecDecodeStop(const SceAvcdecCtrl *ctrl, SceAvcdecArrayPicture *pics);
 
 #ifdef __cplusplus
 }
