@@ -191,7 +191,7 @@ VITASDK_BUILD_ASSERT_EQ(0xC, SceAvcdecArrayPicture);
 int sceVideodecInitLibrary(SceVideodecType codec, const SceVideodecQueryInitInfoHwAvcdec *initInfo);
 
 /**
- * @info Same as `sceVideodecInitLibrary`, but this is needed to initialize the M4V decoder, as the latter will fail with `SCE_VIDEODEC_ERROR_INVALID_PARAM`
+ * @info Same as ::sceVideodecInitLibrary, but this is needed to initialize the M4V decoder, as the latter will fail with ::SCE_VIDEODEC_ERROR_INVALID_PARAM
  * @param[in] codec - See ::SceVideodecType
  * @param[in] initInfo - See ::SceVideodecQueryInitInfoHwAvcdec
  *
@@ -250,14 +250,40 @@ int sceAvcdecDecodeStop(const SceAvcdecCtrl *decoder, SceAvcdecArrayPicture *arr
 
 /**
  * @param[in] type, must be `SCE_VIDEODEC_TYPE_HW_M4VDEC`
+	* @param[in] query - Should be copy from ::SceVideodecQueryInitInfoHwAvcdec.
+ * @param[out] decoderInfo - Must be initialized with zeros.
+ *
+ * @return 0 on success, < 0 on error.
  */
 int sceM4vdecQueryDecoderMemSize(SceVideodecType type, const SceAvcdecQueryDecoderInfo *q, SceAvcdecDecoderInfo *info);
 /**
  * @param[in] type, must be `SCE_VIDEODEC_TYPE_HW_M4VDEC`
+	* @param[out] decoder - Must be initialized frameBuf.size and frameBuf.pBuf
+ * @param[in] query - Should be copy from ::SceVideodecQueryInitInfoHwAvcdec.
+ *
+ * @return 0 on success, < 0 on error.
  */
 int sceM4vdecCreateDecoder(SceVideodecType type, SceAvcdecCtrl *ctrl, const SceAvcdecQueryDecoderInfo *q);
+/**
+ * @param[in] decoder - A ::SceAvcdecCtrl decoder initialized with ::sceM4vdecCreateDecoder
+ *
+ * @return 0 on success, < 0 on error.
+ */
 int sceM4vdecDeleteDecoder(SceAvcdecCtrl *ctrl);
+/**
+ * @param[in] decoder
+ * @param[in] au - Must set buffer information(es) and be initialized timestamps with 0xFFFFFFFF
+ * @param[out] pics - Must set numOfElm and pPicture. See ::SceAvcdecArrayPicture
+ *
+ * @return 0 on success, < 0 on error.
+ */
 int sceM4vdecDecode(const SceAvcdecCtrl *ctrl, const SceAvcdecAu *au, SceAvcdecArrayPicture *pics);
+/**
+ * @param[in] decoder
+ * @param[out] pics - Must set numOfElm and pPicture. See ::SceAvcdecArrayPicture
+ *
+ * @return 0 on success, < 0 on error.
+ */
 int sceM4vdecDecodeStop(const SceAvcdecCtrl *ctrl, SceAvcdecArrayPicture *pics);
 
 #ifdef __cplusplus
