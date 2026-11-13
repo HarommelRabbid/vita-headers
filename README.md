@@ -19,7 +19,7 @@ The documentation is rebuilt every time a commit is pushed to master and it is h
 
 ## Special macros
 
-|Name|Where it is located|What it is|
+|Name|Where it's located|What it is|
 |-----|-----|-----|
 |`PSP2_SDK_VERSION`|`psp2common/defs.h`|A macro defined with an integer indicating the SDK version.|
 |`__USE_SCE_KERNEL_DOMAIN_TEXT_MEMCPY_IMPORT`|`psp2kern/kernel/cpu.h`|A macro to switch sceKernelDomainTextMemcpy to import. Since 3.63, sceKernelDomainTextMemcpy has been removed from the sysmem export, so this macro is forced to undef and becomes a static inline function if `PSP2_SDK_VERSION` is 0x3630000 or higher.|
