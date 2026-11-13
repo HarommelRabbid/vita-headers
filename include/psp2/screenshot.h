@@ -52,21 +52,50 @@ typedef struct SceScreenShotParam {
 } SceScreenShotParam;
 VITASDK_BUILD_ASSERT_EQ(0x10, SceScreenShotParam);
 
-//! Set screenshot params
-int sceScreenShotSetParam(const SceScreenShotParam *param);
+//! Modes for the screenshot capture
+typedef enum SceScreenShotCaptureMode {
+	SCE_SCREENSHOT_CAPTURE_MODE_NORMAL           = 0,
+	SCE_SCREENSHOT_CAPTURE_MODE_FORCE_CAPTURE    = 1,
+} SceScreenShotCaptureMode;
+
+//! Screenshot capture file information
+typedef struct SceScreenShotCaptureFileInfo {
+	SceChar8 path[SCE_SCREENSHOT_MAX_FS_PATH];    /* path of capture file */
+} SceScreenShotCaptureFileInfo;
+
+//! Disable screenshot notification
+SceInt32 sceScreenShotDisableNotification(void);
+
+//! Enable screenshot notification
+SceInt32 sceScreenShotEnableNotification(void);
+
+//! Screenshot cancel callback function definition
+typedef SceBool (*SceScreenShotCaptureCancelFunc)(void*);
+
+/**
+ * @param[in]  mode            Mode of the screenshot capture, refer to ::SceScreenShotCaptureMode
+	* @param[out] captureFileInfo Pointer to a ::SceScreenShotCaptureFileInfo struct, will return the path where the screenshot was saved (inside the pointer to the struct).
+	* @param[in]  cancelFunc       Function callback pointer for the screenshot cancel function, refer to ::SceScreenShotCaptureCancelFunc, but this can be NULL.
+	* @param[in]  userdata         Most likely userdata for the cancel callback, can be NULL
+	*
+	* @return below 0 on failure, above 0 on success
+ */
+SceInt32 sceScreenShotCapture(SceScreenShotCaptureMode mode, SceScreenShotCaptureFileInfo *captureFileInfo, SceScreenShotCaptureCancelFunc cancelFunc, void *userdata);
+
+//! Set screenshot parameters
+SceInt32 sceScreenShotSetParam(const SceScreenShotParam *param);
 
 //! Set overlay image
-int sceScreenShotSetOverlayImage(const char *filepath, int offsetX, int offsetY);
+SceInt32 sceScreenShotSetOverlayImage(const char *filepath, int offsetX, int offsetY);
 
 //! Disable screenshot
-int sceScreenShotDisable(void);
+SceInt32 sceScreenShotDisable(void);
 
 //! Enable screenshot
-int sceScreenShotEnable(void);
+SceInt32 sceScreenShotEnable(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* _PSP2_SCREENSHOT_H_ */
-
